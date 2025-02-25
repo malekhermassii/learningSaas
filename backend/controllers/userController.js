@@ -1,4 +1,4 @@
-const Course = require("../models/course.model")
+const Course = require("../modals/userModal")
 exports.createCourse = (req , res)=>{
     const course = new Course({
         title : req.body.title , 
@@ -69,6 +69,22 @@ exports.updateCourse = (req , res)=>{
             })
         }
         res.send(course)
+    })
+    .catch((error)=>{
+        res.status(500).send({
+            message : error.message || " server error while updating the course by id"  + req.params.courseId
+        })
+    })
+}
+exports.delete = (req, res)=>{
+    Course.findByIdAndDelete(req.params.courseId)
+    .then((course)=>{
+        if(!course){
+            return res.status(404).send({
+                message : "course not fount with the id " + req.params.courseId
+            })
+        }
+        res.send({message : "course deleted successfully"})
     })
     .catch((error)=>{
         res.status(500).send({
